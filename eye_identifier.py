@@ -368,7 +368,8 @@ class GridSearch():
             score = np.append(score, score_temp)
         score = score.reshape(self.folds, len(params_temp))
         score_mean = np.mean(score, axis=0)
-        for i in len(score_mean):
+        print("Scores for each parameter combination:")
+        for i in range(len(score_mean)):
             print ("{}: {}".format(params_temp[i], score_mean[i]))
         min_index = np.argmin(score_mean)
         return params_temp[min_index], score_mean[min_index]
