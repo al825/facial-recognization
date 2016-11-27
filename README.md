@@ -1,7 +1,7 @@
 # Eye Center Identification
 Image recognition has become a popular and challenging topic in the field of machine learning.This project is a symplified version of Kaggle's competition--[Facial Keypoints Detection](https://www.kaggle.com/c/facial-keypoints-detection). 
 
-# Data
+## Data
 
 1. Original data source: https://www.kaggle.com/c/facial-keypoints-detection/data training.zip
 2. Data used in this project: the first 200 samples from the original data set
