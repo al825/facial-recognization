@@ -32,6 +32,7 @@ The programs in this project are written in Python3.5.
 
 ## Example
 Here is an example of the predictions of eye locations: 
-![Example](https://github.com/al825/facial-recognization/blob/master/image_for_readme.png)
+![Example](https://github.com/al825/facial-recognization/blob/master/image_for_readme.png)  
+
 The red dots represented the predicted eye center locations and the blue dots represented the results from the benchmark model. 
 
