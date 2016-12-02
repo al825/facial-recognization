@@ -50,8 +50,8 @@ class PageOne(tk.Frame):
     
     def create_widgets(self): 
         self.label = tk.Label(self,text='Creating Model')
-        self.label.config(font=("Courier", 30))
-        self.label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.label.config(font=("Courier", 20))
+        self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)
      
         
 class PageTwo(tk.Frame):
