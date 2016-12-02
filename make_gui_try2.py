@@ -1,11 +1,32 @@
 from tkinter import *
+
+
+class EyeCenterApp(Tk):
+    def __init__(self, height, width):
+        Tk.__init__(self)
+        self.geometry('{}x{}'.format(height, width))
+        self.wm_title('Eye Center Prediction')
+        self.resizable(width=False, height=False)
+        self.container = Frame(self)
+        self.container.pack(side = TOP, fill=BOTH, expand=True)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)        
+        self.frames = {}
+        for f in [StartPage, PageOne]:
+            self.frames[f] = f(self.container, self)
+            self.frames[f].config(height=height)
+            self.frames[f].config(width=width)
+            self.frames[f].grid(row=0, column=0, sticky="nsew")
+        self.show_frame(StartPage)
         
-class FrameOne(Frame):
-    def __init__(self, master):
-        Frame.__init__(self,master)
-        self['width'] = 500
-        self['height'] = 500
-        self.pack(fill='both')
+    def show_frame(self, page):
+        self.frames[page].tkraise()
+        
+class StartPage(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+        self.parent = parent
+        self.controller = controller
         self.create_widgets()
     
     def create_widgets(self): 
@@ -16,51 +37,43 @@ class FrameOne(Frame):
         self.button.place(relx=0.5, rely=0.5, anchor=CENTER)
      
     def click_start(self):
-        self.pack_forget()
-        self.next_frame=FrameTwo(self.master)
+        self.controller.show_frame(PageOne)
+        # model
+        #self.controlller.show_frame(PageTwo)
+                    
         
-class FrameTwo(Frame):
-    def __init__(self, master):
-        Frame.__init__(self, master)
-        self.config(width=500, height=500)
-        self.pack(fill='both')
-        self.create_widges()
-        
-    def create_widges(self):
-        self.label = Label(text='Creating Model')
+class PageOne(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+        self.parent = parent
+        self.controller = controller
+        self.create_widgets()
+    
+    def create_widgets(self): 
+        self.label = Label(self,text='Creating Model')
         self.label.config(font=("Courier", 30))
         self.label.place(relx=0.5, rely=0.5, anchor=CENTER)
+     
+        
+class PageTwo(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+        self.parent = parent
+        self.controller = controller
+        self.create_widgets()
+        
+    def create_widgets(self):
+        self.label = Label(self, text='Predict')
+        self.label.config(font=("Courier", 30))
+        self.label.place(relx=0.5, rely=0.5, anchor=CENTER)
+    
+    
+        
+        
         
 
 if __name__ == '__main__':        
-    root = Tk()
-    root.geometry("500x500")
-    root.resizable(width=False, height=False)
-    frame1 = FrameOne(root)
+    root = EyeCenterApp(height=500, width=500)
     root.mainloop()
 
-'''
-# create the root window
-root = Tk()
-# optionally give it a title
-root.title("My Title")
-# set the root window's height, width and x,y position
-# x and y are the coordinates of the upper left corner
-w = 300
-h = 200
-x = 50
-y = 100
-# use width x height + x_offset + y_offset (no spaces!)
-root.geometry("%dx%d+%d+%d" % (w, h, x, y))
-# use a colorful frame
-frame = Frame(root, bg='green')
-frame.pack(fill='both', expand='yes')
-# position a label on the frame using place(x, y)
-# place(x=0, y=0) would be the upper left frame corner
-label = Label(frame, text="Hello Python Programmer!")
-label.place(x=20, y=30)
-# put the button below the label, change y coordinate
-button = Button(frame, text="Press me", bg='yellow')
-button.place(x=20, y=60)
-root.mainloop()
-'''  
+
