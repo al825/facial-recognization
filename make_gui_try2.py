@@ -1,7 +1,9 @@
 import tkinter as tk
 
+from build_model_gui import BestModel
+
 class EyeCenterApp(tk.Tk):
-    def __init__(self, height, width):
+    def __init__(self, height, width, best_model):
         tk.Tk.__init__(self)
         self.geometry('{}x{}'.format(height, width))
         self.wm_title('Eye Center Prediction')
@@ -9,7 +11,8 @@ class EyeCenterApp(tk.Tk):
         self.container = tk.Frame(self)
         self.container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.container.grid_rowconfigure(0, weight=1)
-        self.container.grid_columnconfigure(0, weight=1)        
+        self.container.grid_columnconfigure(0, weight=1)  
+        self.best_model = best_model
         self.frames = {}
         for f in [StartPage, PageOne]:
             self.frames[f] = f(self.container, self)
@@ -38,6 +41,7 @@ class StartPage(tk.Frame):
     def click_start(self):
         self.controller.show_frame(PageOne)
         # model
+        best_model = BestModel()
         #self.controlller.show_frame(PageTwo)
                     
         
