@@ -1,5 +1,4 @@
 import tkinter as tk
-
 from build_model_gui import BestModel
 
 class EyeCenterApp(tk.Tk):
@@ -32,7 +31,7 @@ class StartPage(tk.Frame):
         self.create_widgets()
     
     def create_widgets(self): 
-        self.instruction = tk.Label(self, text='Facial Recognization')
+        self.instruction = tk.Label(self, text='Eye Center Recognization')
         self.instruction.config(font=("Courier", 20))
         self.instruction.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
         self.button = tk.Button(self, text = 'START', command=self.click_start)
