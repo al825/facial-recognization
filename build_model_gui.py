@@ -20,17 +20,14 @@ class BestModel():
     half_WIDTH = 10
     N_sub = 200
     N_plots = 20
-    
-
-    
+        
     def __init__(self, clf, step_size = (1, 1), N_steps = (8, 4)):
         self.step_size = step_size
         self.N_steps = N_steps
         self.clf = clf
         self.data_pred = None
         self.mse = None
-        
-        
+               
     def process_data(self, location = r"..\data\training.csv"):
         # Import data
         data_ori = pd.read_csv(location)
@@ -60,7 +57,7 @@ class BestModel():
         # Get 20 subplots from each image, 1 right eye, 1 left eye, 2 randomly selected subplots
         # Create the eye training data set
         random.seed(123)
-        col_names = ['pixel' + str(v) for v in range(0, HEIGHT * WIDTH)] + ['center_X', 'center_Y', 'is_eye']
+        col_names = ['pixel' + str(v) for v in range(0, BestModel.HEIGHT * BestModel.WIDTH)] + ['center_X', 'center_Y', 'is_eye']
         data_eye = pd.DataFrame(columns = col_names)   
 
         for i in range(0, images_train.shape[0]):
@@ -78,21 +75,21 @@ class BestModel():
                 _y = np.array([_y, _y, _y, _y-1, _y+1])
                 center_X = np.append(center_X, _x)
                 center_Y = np.append(center_Y, _y)
-                is_eye = np.append(is_eye, [1] * int(N_plots / 4))
+                is_eye = np.append(is_eye, [1] * int(BestModel.N_plots / 4))
             # randomly select two subplots
-            for r in range(int(N_plots / 2)):
+            for r in range(int(BestModel.N_plots / 2)):
                 while True:
-                    _x = random.uniform(0, SIZE)
-                    _y = random.uniform(0, SIZE)
+                    _x = random.uniform(0, BestModel.SIZE)
+                    _y = random.uniform(0, BestModel.SIZE)
                     # do not want the random center to be too close to the eyes
-                    if not (abs(_x - data_pos_train.iloc[i][ 'left_eye_center_x']) + abs(_y - data_pos_train.iloc[i][ 'left_eye_center_y']) < HEIGHT + WIDTH or abs(_x - data_pos_train.iloc[i][ 'right_eye_center_x']) + abs(_y - data_pos_train.iloc[i][ 'right_eye_center_y']) < HEIGHT + WIDTH):
+                    if not (abs(_x - data_pos_train.iloc[i][ 'left_eye_center_x']) + abs(_y - data_pos_train.iloc[i][ 'left_eye_center_y']) < BestModel.HEIGHT + BestModel.WIDTH or abs(_x - data_pos_train.iloc[i][ 'right_eye_center_x']) + abs(_y - data_pos_train.iloc[i][ 'right_eye_center_y']) < BestModel.HEIGHT + BestModel.WIDTH):
                         break
                 center_X = np.append(center_X, _x)
                 center_Y = np.append(center_Y, _y)
                 is_eye = np.append(is_eye, 0)
 
             for j in range (0,len(center_X)):            
-                temp = my_func.cut_image(center_X[j], center_Y[j], half_WIDTH, half_HEIGHT)    
+                temp = my_func.cut_image(center_X[j], center_Y[j], BestModel.half_WIDTH, BestModel.half_HEIGHT)    
                 ima = pd.Series(images_train.iloc[i][temp[1]])
                 ima = ima.append(pd.Series([center_X[j], center_Y[j], is_eye[j]]))
                 ima.index = col_names
@@ -108,22 +105,26 @@ class BestModel():
 
         # A Benchmark
         # If use the mean center of the training set, what is the mse
-        BestModel.pred_data_mean = pd.DataFrame({'left_eye_x_mean': [train_pos.left_eye_center_x.mean()] * len(test_X),
-                                       'left_eye_y_mean': [train_pos.left_eye_center_y.mean()] * len(test_X),
-                                       'right_eye_x_mean': [train_pos.right_eye_center_x.mean()] * len(test_X),
-                                       'right_eye_y_mean': [train_pos.right_eye_center_y.mean()] * len(test_X)})
+        BestModel.mean_pos = {'left_eye_x_mean': BestModel.train_pos.left_eye_center_x.mean(),
+                              'left_eye_y_mean': BestModel.train_pos.left_eye_center_y.mean(),
+                              'right_eye_x_mean': BestModel.train_pos.right_eye_center_x.mean(),
+                              'right_eye_y_mean': BestModel.train_pos.right_eye_center_y.mean()}
+            
+        self.data_pred = pd.DataFrame(columns = ('id', 'left_eye_center_x', 'left_eye_center_y', 'right_eye_center_x', 'right_eye_center_y'))
        
     
-    def build_model(self):
-        
-        self.eye_id = EyeCenterIdentifier(self.clf, self..step_size, self..N_steps)
-        self.clf = eye_id.fit(BestModel.train_X, BestModel.train_y, BestModel.train_pos)
-
-    
+    def build_model(self):       
+        self.eye_id = EyeCenterIdentifier(self.clf, self.step_size, self.N_steps)
+        self.clf = self.eye_id.fit(BestModel.train_X, BestModel.train_y, BestModel.train_pos)
     
     def make_prediction(self, index):
-        self.data_pred = eye_id.predict(BestModel.test_X.iloc[index], has_prob = True)
-        self.mse = eye_id.get_mse(data_pred, test_pos) #1.63
+        data_pred = self.eye_id.predict(BestModel.test_X.iloc[index], has_prob=True)
+        mse = self.eye_id.get_mse(data_pred, BestModel.test_pos.iloc[index]) 
+        data_pred['id'] = index
+        self.data_pred = self.data_pred.append(data_pred)
+        return mse
+        
+        
 
     def draw_result(self, index):
         my_func.draw_results(test_X.iloc[i], test_pos.iloc[i], data_pred.iloc[i], pred_data_mean.iloc[0], draw_mean=True)
@@ -133,7 +134,7 @@ class BestModel():
         image = BestModel.test_X.iloc[index]
         pred_values = self.data_pred
         true_values = BestModel.test_pos.iloc[index]
-        mean_values = BestModel.pred_data_mean        
+        mean_values = BestModel.mean_pos        
         plt.imshow(image.reshape((size, size)), cmap=plt.cm.gray)
         pred_pos, = plt.plot(pred_values.left_eye_center_x, pred_values.left_eye_center_y, 'r.', label='Predicted Position')
         plt.plot(pred_values.right_eye_center_x, pred_values.right_eye_center_y, 'r.')
@@ -146,7 +147,25 @@ class BestModel():
             plt.plot(mean_values.right_eye_x_mean, mean_values.right_eye_y_mean, 'b.')
         plt.xlim([0,size])
         plt.ylim([size,0])
-    return plt
+        return plt
+    
+if __name__ == '__main__':
+    step_size = (1, 1)
+    N_steps = (8, 4)
+    clf = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_impurity_split=1e-07, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            n_estimators=50, n_jobs=1, oob_score=False, random_state=312,
+            verbose=0, warm_start=False)
+    best_model= BestModel(clf, step_size, N_steps)
+    best_model.process_data()
+    best_model.build_model()
+    mse = best_model.make_prediction(1)
+    print (mse)
+    
+    
+
 
         
 
