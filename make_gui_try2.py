@@ -57,15 +57,29 @@ class StartPage(tk.Frame):
         self.button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
      
     def click_start(self):
-        self.pack_forget()
+        #self.pack_forget()
         self.controller.show_frame(PageOne)
-
+        #self.controller.show_frame(PageOne)
+        #print('start')
+        self.controller.after(1000, self.controller.process_data)
+        #print('finish')
+        self.controller.after(1000, self.controller.show_frame, PageTwo)
+        #print('page2')
+        #self.controller.frames[PageOne].pd()
+        #self.controller.frames[PageOne].visible = True
+        #time.sleep(5)
+        #
+        #print(self.controller.frames[PageOne].visible)
+        #if self.controller.frames[PageOne].visible:
+         #   time.sleep(20)
+        # process the data and build the model
+        #self.controller.process_data()
+        #self.controller.build_model()
         
+        #self.controller.show_frame(PageTwo)
+        #print("Shown the PageTwo")
+        #time.sleep(5)
         
-        self.controller.show_frame(PageTwo)
-        # process the data and building the model
-        self.controller.process_data()
-        self.controller.build_model()
                     
         
 class PageOne(tk.Frame):
@@ -112,7 +126,8 @@ if __name__ == '__main__':
     best_model= BestModel(clf, step_size, N_steps)
     
     root = EyeCenterApp(height=500, width=500, best_model=best_model)
+    root.mainloop()    
 
-    root.mainloop()
+    
 
 
