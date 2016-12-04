@@ -4,11 +4,14 @@ import pandas as pd
 import sklearn 
 import numpy as np
 import random
+
+from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib import pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 import my_func
 import time
 from eye_identifier import EyeCenterIdentifier, GridSearch
@@ -139,10 +142,22 @@ class PageThree(tk.Frame):
         self.label.config(font=("Courier", 10))
         self.label.place(relx=0.1, rely=0.1, anchor=tk.CENTER)
         
-        #figure = self.controller.best_model.draw_face(1, 96)
-        #canvas = FigureCanvasTkAgg(figure, self)
+        figure = self.controller.best_model.draw_face(1, 96)
+        canvas = FigureCanvasTkAgg(figure, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)  
+        #f = Figure(figsize=(5,5), dpi=100)
+        #a = f.add_subplot(111)
+        #a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        #canvas = FigureCanvasTkAgg(f, self)
         #canvas.show()
-        #canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)        
+        #canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        
+
+        
+    
+    
         
         
         
