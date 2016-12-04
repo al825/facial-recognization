@@ -127,7 +127,7 @@ class BestModel():
         
     def draw_face(self, index, size):
         image=BestModel.test_X.iloc[index]
-        f = Figure(figsize=(size,size), dpi=100)
+        f = Figure(figsize=(5,5), dpi=100)
         a = f.add_subplot(111)
         a.imshow(image.reshape((size, size)), cmap=plt.cm.gray)
         return f
