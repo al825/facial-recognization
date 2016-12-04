@@ -4,7 +4,11 @@ import pandas as pd
 import sklearn 
 import numpy as np
 import random
+import matplotlib
+matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import my_func
 import time
 from eye_identifier import EyeCenterIdentifier, GridSearch
@@ -25,12 +29,15 @@ class EyeCenterApp(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)  
         self.best_model = best_model
         self.frames = {}
-        for f in [StartPage, PageOne, PageTwo]:
-            self.frames[f] = f(self.container, self)
-            self.frames[f].config(height=height)
-            self.frames[f].config(width=width)
-            self.frames[f].grid(row=0, column=0, sticky="nsew")
+        self.init_page(StartPage)
         self.show_frame(StartPage)
+        
+    def init_page(self, page):
+        self.frames[page] = page(self.container, self)
+        #self.frames[page].config(height=height)
+        #self.frames[page].config(width=width)
+        self.frames[page].grid(row=0, column=0, sticky="nsew")
+        
         
     def show_frame(self, page):
         self.frames[page].tkraise()
@@ -57,12 +64,11 @@ class StartPage(tk.Frame):
         self.button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
      
     def click_start(self):
-        #self.pack_forget()
+        self.controller.init_page(PageOne)
         self.controller.show_frame(PageOne)
-        #self.controller.show_frame(PageOne)
-        #print('start')
         self.controller.after(1000, self.controller.process_data)
-        #print('finish')
+        self.controller.after(1000, self.controller.init_page, PageTwo)
+        #self.controller.init_page(PageTwo)
         self.controller.after(1000, self.controller.show_frame, PageTwo)
         #print('page2')
         #self.controller.frames[PageOne].pd()
@@ -106,10 +112,37 @@ class PageTwo(tk.Frame):
         
     def create_widgets(self):
         self.label = tk.Label(self, text='Predict')
-        self.label.config(font=("Courier", 30))
-        self.label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.label.config(font=("Courier", 10))
+        self.label.place(relx=0.1, rely=0.1, anchor=tk.CENTER)
+        
+        #can = tk.Canvas(self)
+        #can.pack(fill=tk.BOTH, expand=True)
+        img = tk.PhotoImage(file="dan4.gif")
+        #can.create_image(10, 10, anchor=tk.CENTER, image=img)  
+        
+
+        label = tk.Label(self, image=img)
+        label.image = img # keep a reference!
+        label.pack(fill=tk.BOTH, expand=True)
+        
+
     
-    
+class PageThree(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+        self.controller = controller
+        self.create_widgets()
+        
+    def create_widgets(self):
+        self.label = tk.Label(self, text='Predict')
+        self.label.config(font=("Courier", 10))
+        self.label.place(relx=0.1, rely=0.1, anchor=tk.CENTER)
+        
+        figure = self.controller.best_model.draw_face(1, 96)
+        canvas = FigureCanvasTkAgg(figure, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)        
         
         
         
