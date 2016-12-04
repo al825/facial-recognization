@@ -18,9 +18,9 @@ from sklearn.model_selection import train_test_split
 
 
 class EyeCenterApp(tk.Tk):
-    def __init__(self, height, width, best_model):
+    def __init__(self, width, height, best_model):
         tk.Tk.__init__(self)
-        self.geometry('{}x{}'.format(height, width))
+        self.geometry('{}x{}'.format(width, height))
         self.wm_title('Eye Center Prediction')
         self.resizable(width=False, height=False)
         self.container = tk.Frame(self)
@@ -112,12 +112,13 @@ class PageTwo(tk.Frame):
         
     def create_widgets(self):
         self.label = tk.Label(self, text='Predict')
-        self.label.config(font=("Courier", 10))
+        self.label.config(font=("Courier", 20))
         self.label.grid(row=0, column=0, columnspan=5)
-        img = tk.PhotoImage(file="dan4.gif")    
-        ima_button = tk.Button(self, image=img, command = self.controller.show_frame(StartPage))
-        ima_button.image = img # keep a reference!
-        ima_button.grid(row=1, column=1)
+        for i in range(10):
+            img = tk.PhotoImage(file="dan4.gif")    
+            ima_button = tk.Button(self, image=img, command = lambda: self.controller.show_frame(StartPage))
+            ima_button.image = img # keep a reference!
+            ima_button.grid(row=int(i/5)+1, column=i-int(i/5)*5+1, padx=5, pady=5)
         
 
     
@@ -152,7 +153,7 @@ if __name__ == '__main__':
             verbose=0, warm_start=False)
     best_model= BestModel(clf, step_size, N_steps)
     
-    root = EyeCenterApp(height=500, width=500, best_model=best_model)
+    root = EyeCenterApp(width=500, height=800, best_model=best_model)
     root.mainloop()    
     
     
