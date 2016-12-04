@@ -116,9 +116,14 @@ class PageTwo(tk.Frame):
         self.label.grid(row=0, column=0, columnspan=5)
         for i in range(10):
             img = tk.PhotoImage(file="dan4.gif")    
-            ima_button = tk.Button(self, image=img, command = lambda: self.controller.show_frame(StartPage))
+            ima_button = tk.Button(self, image=img, command=lambda: self.click_button(i=i))
             ima_button.image = img # keep a reference!
             ima_button.grid(row=int(i/5)+1, column=i-int(i/5)*5+1, padx=5, pady=5)
+            
+    def click_button(self, i):
+        self.controller.init_page(PageThree)
+        self.controller.show_frame(PageThree)
+        
         
 
     
@@ -134,10 +139,10 @@ class PageThree(tk.Frame):
         self.label.config(font=("Courier", 10))
         self.label.place(relx=0.1, rely=0.1, anchor=tk.CENTER)
         
-        figure = self.controller.best_model.draw_face(1, 96)
-        canvas = FigureCanvasTkAgg(figure, self)
-        canvas.show()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)        
+        #figure = self.controller.best_model.draw_face(1, 96)
+        #canvas = FigureCanvasTkAgg(figure, self)
+        #canvas.show()
+        #canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)        
         
         
         
