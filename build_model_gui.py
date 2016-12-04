@@ -125,9 +125,6 @@ class BestModel():
         return mse
         
         
-
-    def draw_result(self, index):
-        my_func.draw_results(test_X.iloc[i], test_pos.iloc[i], data_pred.iloc[i], pred_data_mean.iloc[0], draw_mean=True)
         
         
     def draw_results(index, size, draw_true=True, draw_mean=True):
