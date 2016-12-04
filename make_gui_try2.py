@@ -113,17 +113,11 @@ class PageTwo(tk.Frame):
     def create_widgets(self):
         self.label = tk.Label(self, text='Predict')
         self.label.config(font=("Courier", 10))
-        self.label.place(relx=0.1, rely=0.1, anchor=tk.CENTER)
-        
-        #can = tk.Canvas(self)
-        #can.pack(fill=tk.BOTH, expand=True)
-        img = tk.PhotoImage(file="dan4.gif")
-        #can.create_image(10, 10, anchor=tk.CENTER, image=img)  
-        
-
-        label = tk.Label(self, image=img)
-        label.image = img # keep a reference!
-        label.pack(fill=tk.BOTH, expand=True)
+        self.label.grid(row=0, column=0, columnspan=5)
+        img = tk.PhotoImage(file="dan4.gif")    
+        ima_button = tk.Button(self, image=img, command = self.controller.show_frame(StartPage))
+        ima_button.image = img # keep a reference!
+        ima_button.grid(row=1, column=1)
         
 
     
@@ -160,6 +154,9 @@ if __name__ == '__main__':
     
     root = EyeCenterApp(height=500, width=500, best_model=best_model)
     root.mainloop()    
+    
+    
+#Note: for image, 1. use paint to adjust the format; 2. do not forget to keep a reference
 
     
 
