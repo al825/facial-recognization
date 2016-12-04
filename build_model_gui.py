@@ -4,6 +4,7 @@ import sklearn
 import numpy as np
 import random
 from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
 import my_func
 import time
 from eye_identifier import EyeCenterIdentifier, GridSearch
@@ -126,9 +127,13 @@ class BestModel():
         
     def draw_face(self, index, size):
         image=BestModel.test_X.iloc[index]
-        plt.xlim([0,size])
-        plt.ylim([size,0])
-        return plt
+        f = Figure(figsize=(5,5), dpi=100)
+        a = f.add_subplot(111)
+        a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        #plt.imshow(image.reshape((size, size)), cmap=plt.cm.gray)
+        f.xlim([0,size])
+        f.ylim([size,0])
+        return f
         
         
         
