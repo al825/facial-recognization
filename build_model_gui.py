@@ -124,24 +124,30 @@ class BestModel():
         self.data_pred = self.data_pred.append(data_pred)
         return mse
         
+    def draw_face(self, index, size):
+        image=BestModel.test_X.iloc[index]
+        plt.xlim([0,size])
+        plt.ylim([size,0])
+        return plt
         
         
         
-    def draw_results(index, size, draw_true=True, draw_mean=True):
-        image = BestModel.test_X.iloc[index]
+        
+    def draw_results(self, index, size, draw_true=False, draw_mean=False):
+        image=BestModel.test_X.iloc[index]
         pred_values = self.data_pred
-        true_values = BestModel.test_pos.iloc[index]
-        mean_values = BestModel.mean_pos        
+        #true_values = BestModel.test_pos.iloc[index]
+        #mean_values = BestModel.mean_pos        
         plt.imshow(image.reshape((size, size)), cmap=plt.cm.gray)
-        pred_pos, = plt.plot(pred_values.left_eye_center_x, pred_values.left_eye_center_y, 'r.', label='Predicted Position')
-        plt.plot(pred_values.right_eye_center_x, pred_values.right_eye_center_y, 'r.')
-        if draw_true: 
-            true_pos, = plt.plot(true_values.left_eye_center_x, true_values.left_eye_center_y, 'g.', label='True Position')
-            plt.plot(true_values.right_eye_center_x, true_values.right_eye_center_y, 'g.')
+        #pred_pos, = plt.plot(pred_values.left_eye_center_x, pred_values.left_eye_center_y, 'r.', label='Predicted Position')
+        #plt.plot(pred_values.right_eye_center_x, pred_values.right_eye_center_y, 'r.')
+        #if draw_true: 
+         #   true_pos, = plt.plot(true_values.left_eye_center_x, true_values.left_eye_center_y, 'g.', label='True Position')
+          #  plt.plot(true_values.right_eye_center_x, true_values.right_eye_center_y, 'g.')
     
-        if draw_mean:
-            mean_pos, = plt.plot(mean_values.left_eye_x_mean, mean_values.left_eye_y_mean, 'b.', label='Average Position')
-            plt.plot(mean_values.right_eye_x_mean, mean_values.right_eye_y_mean, 'b.')
+        #if draw_mean:
+         #   mean_pos, = plt.plot(mean_values.left_eye_x_mean, mean_values.left_eye_y_mean, 'b.', label='Average Position')
+          #  plt.plot(mean_values.right_eye_x_mean, mean_values.right_eye_y_mean, 'b.')
         plt.xlim([0,size])
         plt.ylim([size,0])
         return plt
@@ -160,6 +166,9 @@ if __name__ == '__main__':
     best_model.build_model()
     mse = best_model.make_prediction(1)
     print (mse)
+    #fig = best_model.draw_results(index=1, size=96)
+
+
     
     
 
