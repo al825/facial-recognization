@@ -161,6 +161,12 @@ class PageThree(tk.Frame):
         label2 = tk.Label(self, text="MSE: {:.2f}".format(self.mse))
         label2.pack()
         
+        cv1 = tk.IntVar()
+        checkbox1 = tk.Checkbutton(self, text="Predicted Eye Centers", variable=cv1, command=lambda: self.controller.show_frame(StartPage))
+        checkbox1.pack()
+        
+        
+        
 class ImageButton(tk.Button):
     def __init__(self, parent, index, *args, **kwargs):
         tk.Button.__init__(self, parent, *args, **kwargs)
