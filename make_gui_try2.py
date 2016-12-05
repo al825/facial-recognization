@@ -151,28 +151,50 @@ class PageThree(tk.Frame):
         canvas.show()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)  
         canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        
+        #self.figure = figure
+        self.ax = ax
+        self.canvas = canvas
+        
         button_back = tk.Button(self, text='Make another prediction', command=lambda: self.controller.show_frame(PageTwo))
         button_back.pack(side=tk.BOTTOM)       
         label2 = tk.Label(self, text="MSE: {:.2f}".format(self.mse))
         label2.pack()
         
-        self.cv1 = tk.IntVar()
-        checkbox1 = tk.Checkbutton(self, text="Predicted Eye Centers", variable=self.cv1, onvalue=1, offvalue=0, command=lambda: self.check_box(canvas, ax))
-        checkbox1.pack()
+        check_box1 = CheckBox(self, "Predicted Eye Centers")
+        check_box2 = CheckBox(self, "True Eye Centers")
+        check_box3 = CheckBox(self, "Benchmark Models")
         
-    def check_box(self, canvas, ax):
-        pred_values = self.controller.best_model.data_pred.loc[self.controller.best_model.data_pred['id'] == self.index]
+                  
+class CheckBox(tk.Checkbutton):
+    def __init__(self, parent, text):
+        self.cv = tk.IntVar()
+        self.parent = parent
+        self.text=text
+        tk.Checkbutton.__init__(self, parent, text=text, variable=self.cv, onvalue=1, offvalue=0, command=self.check_box)
+        self.pack()
+        self.p = None
         
-        if self.cv1.get() == 1:
-            self.p1, = ax.plot((pred_values.left_eye_center_x, pred_values.right_eye_center_x), (pred_values.left_eye_center_y, pred_values.right_eye_center_y), 'r.')
-            canvas.draw()
+        
+    def check_box(self):
+        if self.text == 'Predicted Eye Centers':
+            values = self.parent.controller.best_model.data_pred.loc[self.parent.controller.best_model.data_pred['id'] == self.parent.index]
+            color='blue'
+        elif self.text == 'True Eye Centers':
+            values = self.parent.controller.best_model.test_pos.iloc[self.parent.index]
+            color='green'
         else:
-            if self.p1: 
-                self.p1.remove()
-                canvas.draw()
+            values = self.parent.controller.best_model.mean_pos
+            color='red'
             
-        
-        
+        if self.cv.get() == 1:
+            self.p, = self.parent.ax.plot((values['left_eye_center_x'], values['right_eye_center_x']), (values['left_eye_center_y'], values['right_eye_center_y']), marker='.', color=color, linestyle="None")
+            self.parent.canvas.draw()
+        else:
+            if self.p:
+                self.p.remove()
+                self.parent.canvas.draw()
+            
         
 class ImageButton(tk.Button):
     def __init__(self, parent, index, *args, **kwargs):
