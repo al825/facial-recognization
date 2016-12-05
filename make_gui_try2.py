@@ -70,6 +70,7 @@ class StartPage(tk.Frame):
         self.controller.init_page(PageOne)
         self.controller.show_frame(PageOne)
         self.controller.after(1000, self.controller.process_data)
+        self.controller.after(1000, self.controller.build_model)
         self.controller.after(1000, self.controller.init_page, PageTwo)
         #self.controller.init_page(PageTwo)
         self.controller.after(1000, self.controller.show_frame, PageTwo)
@@ -136,17 +137,19 @@ class PageThree(tk.Frame):
         self.parent = parent
         self.controller = controller
         self.index = index
+        self.mse = self.controller.best_model.make_prediction(index=index)
         self.create_widgets()
         
     def create_widgets(self):
-        self.label = tk.Label(self, text='Predict')
-        self.label.config(font=("Courier", 10))
-        self.label.pack()
+        label1 = tk.Label(self, text='Predict')
+        label1.config(font=("Courier", 10))
+        label1.pack()
         
         figure = self.controller.best_model.draw_face(self.index, 96)
         canvas = FigureCanvasTkAgg(figure, self)
         canvas.show()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)  
+        
         #f = Figure(figsize=(5,5), dpi=100)
         #a = f.add_subplot(111)
         #a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
@@ -154,7 +157,9 @@ class PageThree(tk.Frame):
         #canvas.show()
         canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         button_back = tk.Button(self, text='Make another prediction', command=lambda: self.controller.show_frame(PageTwo))
-        button_back.pack(side=tk.BOTTOM)
+        button_back.pack(side=tk.BOTTOM)       
+        label2 = tk.Label(self, text="MSE: {:.2f}".format(self.mse))
+        label2.pack()
         
 class ImageButton(tk.Button):
     def __init__(self, parent, index, *args, **kwargs):
@@ -163,8 +168,11 @@ class ImageButton(tk.Button):
         self.index = index
      
     def click_button(self):
+        
         self.parent.controller.init_page(PageThree, index=self.index)
-        self.controller.show_frame(PageThree)
+        self.parent.controller.show_frame(PageThree)
+        # make the prediction
+        
         
 
         
