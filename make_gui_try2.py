@@ -139,31 +139,38 @@ class PageThree(tk.Frame):
         self.index = index
         self.mse = self.controller.best_model.make_prediction(index=index)
         self.create_widgets()
+        self.p1 = None
         
     def create_widgets(self):
         label1 = tk.Label(self, text='Predict')
         label1.config(font=("Courier", 10))
         label1.pack()
         
-        figure = self.controller.best_model.draw_face(self.index, 96)
+        figure, ax = self.controller.best_model.draw_face(self.index, 96)
         canvas = FigureCanvasTkAgg(figure, self)
         canvas.show()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)  
-        
-        #f = Figure(figsize=(5,5), dpi=100)
-        #a = f.add_subplot(111)
-        #a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
-        #canvas = FigureCanvasTkAgg(f, self)
-        #canvas.show()
         canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         button_back = tk.Button(self, text='Make another prediction', command=lambda: self.controller.show_frame(PageTwo))
         button_back.pack(side=tk.BOTTOM)       
         label2 = tk.Label(self, text="MSE: {:.2f}".format(self.mse))
         label2.pack()
         
-        cv1 = tk.IntVar()
-        checkbox1 = tk.Checkbutton(self, text="Predicted Eye Centers", variable=cv1, command=lambda: self.controller.show_frame(StartPage))
+        self.cv1 = tk.IntVar()
+        checkbox1 = tk.Checkbutton(self, text="Predicted Eye Centers", variable=self.cv1, onvalue=1, offvalue=0, command=lambda: self.check_box(canvas, ax))
         checkbox1.pack()
+        
+    def check_box(self, canvas, ax):
+        pred_values = self.controller.best_model.data_pred.loc[self.controller.best_model.data_pred['id'] == self.index]
+        
+        if self.cv1.get() == 1:
+            self.p1, = ax.plot((pred_values.left_eye_center_x, pred_values.right_eye_center_x), (pred_values.left_eye_center_y, pred_values.right_eye_center_y), 'r.')
+            canvas.draw()
+        else:
+            if self.p1: 
+                self.p1.remove()
+                canvas.draw()
+            
         
         
         
