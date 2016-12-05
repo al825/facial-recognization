@@ -130,7 +130,9 @@ class BestModel():
         f = Figure(figsize=(5,5), dpi=100)
         a = f.add_subplot(111)
         a.imshow(image.reshape((size, size)), cmap=plt.cm.gray)
-        return f
+        a.set_xlim(0, size)
+        a.set_ylim(size, 0)
+        return f, a
         
         
         
