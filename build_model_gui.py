@@ -106,10 +106,10 @@ class BestModel():
 
         # A Benchmark
         # If use the mean center of the training set, what is the mse
-        BestModel.mean_pos = {'left_eye_x_mean': BestModel.train_pos.left_eye_center_x.mean(),
-                              'left_eye_y_mean': BestModel.train_pos.left_eye_center_y.mean(),
-                              'right_eye_x_mean': BestModel.train_pos.right_eye_center_x.mean(),
-                              'right_eye_y_mean': BestModel.train_pos.right_eye_center_y.mean()}
+        BestModel.mean_pos = {'left_eye_center_x': BestModel.train_pos.left_eye_center_x.mean(),
+                              'left_eye_center_y': BestModel.train_pos.left_eye_center_y.mean(),
+                              'right_eye_center_x': BestModel.train_pos.right_eye_center_x.mean(),
+                              'right_eye_center_y': BestModel.train_pos.right_eye_center_y.mean()}
             
         self.data_pred = pd.DataFrame(columns = ('id', 'left_eye_center_x', 'left_eye_center_y', 'right_eye_center_x', 'right_eye_center_y'))
        
