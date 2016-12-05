@@ -21,8 +21,8 @@ from sklearn.model_selection import train_test_split
 
 
 class EyeCenterApp(tk.Tk):
-    def __init__(self, width, height, best_model):
-        tk.Tk.__init__(self)
+    def __init__(self, width, height, best_model, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
         self.geometry('{}x{}'.format(width, height))
         self.wm_title('Eye Center Prediction')
         self.resizable(width=False, height=False)
@@ -35,8 +35,8 @@ class EyeCenterApp(tk.Tk):
         self.init_page(StartPage)
         self.show_frame(StartPage)
         
-    def init_page(self, page):
-        self.frames[page] = page(self.container, self)
+    def init_page(self, page, *args, **kwargs):
+        self.frames[page] = page(self.container, self, *args, **kwargs)
         #self.frames[page].config(height=height)
         #self.frames[page].config(width=width)
         self.frames[page].grid(row=0, column=0, sticky="nsew")
@@ -111,6 +111,7 @@ class PageTwo(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller = controller
+        self.buttons = {}
         self.create_widgets()
         
     def create_widgets(self):
@@ -119,40 +120,51 @@ class PageTwo(tk.Frame):
         self.label.grid(row=0, column=0, columnspan=5)
         for i in range(10):
             img = tk.PhotoImage(file="dan4.gif")    
-            ima_button = tk.Button(self, image=img, command=lambda: self.click_button(i=i))
+            ima_button = ImageButton(self, index = i, image=img)
+            self.buttons['button_'.format(i)] = ima_button
+            ima_button.config(command=self.buttons['button_'.format(i)].click_button)
             ima_button.image = img # keep a reference!
             ima_button.grid(row=int(i/5)+1, column=i-int(i/5)*5+1, padx=5, pady=5)
             
-    def click_button(self, i):
-        self.controller.init_page(PageThree)
-        self.controller.show_frame(PageThree)
-        
+
         
 
     
 class PageThree(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, index):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller = controller
+        self.index = index
         self.create_widgets()
         
     def create_widgets(self):
         self.label = tk.Label(self, text='Predict')
         self.label.config(font=("Courier", 10))
-        self.label.place(relx=0.1, rely=0.1, anchor=tk.CENTER)
+        self.label.pack()
         
-        figure = self.controller.best_model.draw_face(1, 96)
+        figure = self.controller.best_model.draw_face(self.index, 96)
         canvas = FigureCanvasTkAgg(figure, self)
         canvas.show()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)  
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)  
         #f = Figure(figsize=(5,5), dpi=100)
         #a = f.add_subplot(111)
         #a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
         #canvas = FigureCanvasTkAgg(f, self)
         #canvas.show()
-        #canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        button_back = tk.Button(self, text='Make another prediction', command=lambda: self.controller.show_frame(PageTwo))
+        button_back.pack(side=tk.BOTTOM)
+        
+class ImageButton(tk.Button):
+    def __init__(self, parent, index, *args, **kwargs):
+        tk.Button.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        self.index = index
+     
+    def click_button(self):
+        self.parent.controller.init_page(PageThree, index=self.index)
+        self.controller.show_frame(PageThree)
         
 
         
