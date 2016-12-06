@@ -8,12 +8,12 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 
-def re_size(im, outfile):
+def re_size(im, orig_size, fig_size, outfile):
     '''read in the image array, convert to image and save the resized image'''
     im = np.asarray(im, np.uint8)
-    im.resize(96, 96)
+    im.resize(orig_size)
     pil_im = Image.fromarray(im)
-    resized_im = pil_im.resize((70, 70))
+    resized_im = pil_im.resize(fig_size)
     resized_im.save(outfile)
     
 if __name__ == '__main__':
@@ -26,5 +26,5 @@ if __name__ == '__main__':
     images_train, images_test, data_pos_train, data_pos_test = train_test_split(images, data_pos, test_size = 0.2, random_state = 312)
     for i in range(images_test.shape[0]):
         im = images_test.iloc[i]
-        re_size(im, outfile=r"..\figures\small_images\image_{}.png".format(i))
+        re_size(im, (96, 96), (60, 60), outfile=r"..\figures\small_images\image_{}.png".format(i))
 
