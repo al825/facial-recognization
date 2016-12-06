@@ -60,7 +60,7 @@ class StartPage(tk.Frame):
         self.create_widgets()
     
     def create_widgets(self): 
-        self.instruction = tk.Label(self, text='Eye Center Recognization')
+        self.instruction = tk.Label(self, text='Eye Center \n Recognization')
         self.instruction.config(font=("Courier", 20))
         self.instruction.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
         self.button = tk.Button(self, text = 'START', command=self.click_start)
@@ -116,16 +116,16 @@ class PageTwo(tk.Frame):
         self.create_widgets()
         
     def create_widgets(self):
-        self.label = tk.Label(self, text='Predict')
-        self.label.config(font=("Courier", 20))
-        self.label.grid(row=0, column=0, columnspan=5)
-        for i in range(10):
-            img = tk.PhotoImage(file="dan4.gif")    
+        self.label = tk.Label(self, text='Choose a facial image')
+        self.label.config(font=("Courier", 15))
+        self.label.grid(row=0, column=0, columnspan=3)
+        for i in range(40):
+            img = tk.PhotoImage(file=r"..\figures\small_images\image_{}.png".format(i))    
             ima_button = ImageButton(self, index = i, image=img)
             self.buttons['button_'.format(i)] = ima_button
             ima_button.config(command=self.buttons['button_'.format(i)].click_button)
             ima_button.image = img # keep a reference!
-            ima_button.grid(row=int(i/5)+1, column=i-int(i/5)*5+1, padx=5, pady=5)
+            ima_button.grid(row=int(i/5)+2, column=i-int(i/5)*5+1, padx=5, pady=5)
             
 
         
@@ -142,7 +142,7 @@ class PageThree(tk.Frame):
         self.p1 = None
         
     def create_widgets(self):
-        label1 = tk.Label(self, text='Predict')
+        label1 = tk.Label(self, text='Predict Results')
         label1.config(font=("Courier", 10))
         label1.pack()
         
