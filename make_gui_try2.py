@@ -90,9 +90,6 @@ class StartPage(tk.Frame):
         self.draw_eye_centers()
         self.after(1000, self.remove_eye_centers)
         self.after(2000, self.animate)
-
-        
-        
      
     def click_start(self):
         self.controller.init_page(PageOne)
@@ -100,24 +97,8 @@ class StartPage(tk.Frame):
         self.controller.after(1000, self.controller.process_data)
         self.controller.after(1000, self.controller.build_model)
         self.controller.after(1000, self.controller.init_page, PageTwo)
-        #self.controller.init_page(PageTwo)
         self.controller.after(1000, self.controller.show_frame, PageTwo)
-        #print('page2')
-        #self.controller.frames[PageOne].pd()
-        #self.controller.frames[PageOne].visible = True
-        #time.sleep(5)
-        #
-        #print(self.controller.frames[PageOne].visible)
-        #if self.controller.frames[PageOne].visible:
-         #   time.sleep(20)
-        # process the data and build the model
-        #self.controller.process_data()
-        #self.controller.build_model()
-        
-        #self.controller.show_frame(PageTwo)
-        #print("Shown the PageTwo")
-        #time.sleep(5)
-        
+
                     
         
 class PageOne(tk.Frame):
@@ -131,7 +112,16 @@ class PageOne(tk.Frame):
         self.label = tk.Label(self,text='Creating Model')
         self.label.config(font=("Courier", 18))
         self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)
-        
+        img = tk.PhotoImage(file=r"..\figures\small_images\running_man.png")  
+        self.canvas = tk.Canvas(self)
+        self.canvas.create_image(50, 100, image=img)
+        self.canvas.image = img
+        self.canvas.place(relx=0.7, rely=0.7, anchor=tk.CENTER)
+        self.moveit()
+
+    def moveit(self):
+        self.canvas.move(1, 10, 0)
+        self.after(1000, self.moveit)    
 
      
         
