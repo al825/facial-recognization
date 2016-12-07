@@ -65,6 +65,34 @@ class StartPage(tk.Frame):
         self.instruction.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
         self.button = tk.Button(self, text = 'START', command=self.click_start)
         self.button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        # draw a face image
+        self.canvas = tk.Canvas(self)
+        self.canvas.place(relx=0.9, rely=0.9, anchor=tk.CENTER)
+        self.canvas.create_oval(150, 10, 250, 110, outline="black", width=2)
+        self.canvas.create_oval(180, 45, 190, 55, outline="black")
+        self.canvas.create_oval(210, 45, 220, 55, outline="black")
+        self.canvas.create_arc(180, 70, 220, 90, start=0, extent=-180, outline="red", style=tk.ARC, width=2)
+        self.animate()
+        #self.eye_center1 = self.canvas.create_oval(185, 50, 185, 50, fill='blue', width=2)
+        #self.eye_center2 = self.canvas.create_oval(215, 50, 215, 50, fill='blue', width=2)
+        #self.after(5000, self.remove_eye_centers)
+        
+    
+    def draw_eye_centers(self):
+        self.eye_center1 = self.canvas.create_oval(185, 50, 185, 50, outline='blue', fill='blue', width=2)
+        self.eye_center2 = self.canvas.create_oval(215, 50, 215, 50, outline='blue', fill='green', width=2)
+        
+    def remove_eye_centers(self):
+        self.canvas.delete(self.eye_center1)
+        self.canvas.delete(self.eye_center2)
+        
+    def animate(self):
+        self.draw_eye_centers()
+        self.after(1000, self.remove_eye_centers)
+        self.after(2000, self.animate)
+
+        
+        
      
     def click_start(self):
         self.controller.init_page(PageOne)
@@ -101,7 +129,7 @@ class PageOne(tk.Frame):
     
     def create_widgets(self): 
         self.label = tk.Label(self,text='Creating Model')
-        self.label.config(font=("Courier", 20))
+        self.label.config(font=("Courier", 18))
         self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)
         
 
@@ -117,15 +145,15 @@ class PageTwo(tk.Frame):
         
     def create_widgets(self):
         self.label = tk.Label(self, text='Choose a facial image')
-        self.label.config(font=("Courier", 15))
-        self.label.grid(row=0, column=0, columnspan=3)
+        self.label.config(font=("Courier", 12))
+        self.label.grid(row=0, column=0, columnspan=5, padx=7, pady=10)
         for i in range(40):
             img = tk.PhotoImage(file=r"..\figures\small_images\image_{}.png".format(i))    
             ima_button = ImageButton(self, index = i, image=img)
             self.buttons['button_'.format(i)] = ima_button
             ima_button.config(command=self.buttons['button_'.format(i)].click_button)
             ima_button.image = img # keep a reference!
-            ima_button.grid(row=int(i/5)+2, column=i-int(i/5)*5+1, padx=5, pady=5)
+            ima_button.grid(row=int(i/5)+1, column=i-int(i/5)*5+2, padx=5, pady=5, stick='W')
             
 
         
@@ -143,7 +171,7 @@ class PageThree(tk.Frame):
         
     def create_widgets(self):
         label1 = tk.Label(self, text='Predict Results')
-        label1.config(font=("Courier", 10))
+        label1.config(font=("Courier", 15))
         label1.pack()
         
         figure, ax = self.controller.best_model.draw_face(self.index, 96)
@@ -228,7 +256,7 @@ if __name__ == '__main__':
             verbose=0, warm_start=False)
     best_model= BestModel(clf, step_size, N_steps)
     
-    root = EyeCenterApp(width=500, height=800, best_model=best_model)
+    root = EyeCenterApp(width=450, height=700, best_model=best_model)
     root.mainloop()    
     
     
