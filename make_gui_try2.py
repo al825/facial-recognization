@@ -133,14 +133,14 @@ class PageOne(tk.Frame):
         self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)
         img = tk.PhotoImage(file=r"..\figures\small_images\running_man.png")  
         self.canvas = tk.Canvas(self)
-        self.canvas.create_image(50, 100, image=img)
+        self.canvas.create_image(50, 50, image=img)
         self.canvas.image = img
         self.canvas.place(relx=0.7, rely=0.7, anchor=tk.CENTER)
         #self.moveit()
 
     def moveit(self):
-        self.canvas.move(1, 10, 0)
-        self.after(1000, self.moveit)    
+        self.canvas.move(1, 1, 0)
+        self.after(100, self.moveit)    
 
      
         
