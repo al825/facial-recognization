@@ -4,6 +4,8 @@ import pandas as pd
 import sklearn 
 import numpy as np
 import random
+import threading
+
 
 from matplotlib import pyplot as plt
 import matplotlib
@@ -45,10 +47,8 @@ class EyeCenterApp(tk.Tk):
     def show_frame(self, page):
         self.frames[page].tkraise()
         
-    def process_data(self):
-        self.best_model.process_data()
-        
     def build_model(self):
+        self.best_model.process_data()
         self.best_model.build_model()
         
         
@@ -92,10 +92,31 @@ class StartPage(tk.Frame):
     def click_start(self):
         self.controller.init_page(PageOne)
         self.controller.show_frame(PageOne)
-        self.controller.after(1000, self.controller.process_data)
-        self.controller.after(1000, self.controller.build_model)
-        self.controller.after(1000, self.controller.init_page, PageTwo)
-        self.controller.after(1000, self.controller.show_frame, PageTwo)
+        #threading.Thread(target=self.controller.process_data).start()
+        t1 = threading.Thread(target=self.controller.frames[PageOne].moveit)
+        t1.start()
+        
+        self.t2 = threading.Thread(target=self.controller.build_model)
+        self.t2.start()
+        self.check_model(self.t2)
+        
+       
+        #self.controller.after(500, self.controller.process_data)        
+        #self.controller.after(500, self.controller.build_model)
+        #self.controller.after(500, self.controller.init_page, PageTwo)
+        #self.controller.after(500, self.controller.show_frame, PageTwo)
+        
+    def check_model(self, threading_name):
+        while True:
+            if not threading_name.isAlive():
+                self.controller.init_page(PageTwo)
+                self.controller.show_frame(PageTwo)
+                break
+            else:
+                self.after(25, self.check_model, self.t2)
+                break
+
+       
 
                     
         
@@ -115,7 +136,7 @@ class PageOne(tk.Frame):
         self.canvas.create_image(50, 100, image=img)
         self.canvas.image = img
         self.canvas.place(relx=0.7, rely=0.7, anchor=tk.CENTER)
-        self.moveit()
+        #self.moveit()
 
     def moveit(self):
         self.canvas.move(1, 10, 0)
