@@ -28,6 +28,8 @@ class EyeCenterApp(tk.Tk):
         self.geometry('{}x{}'.format(width, height))
         self.wm_title('Eye Center Prediction')
         self.resizable(width=False, height=False)
+        self.width = width
+        self.height = height
         self.container = tk.Frame(self)
         self.container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.container.grid_rowconfigure(0, weight=1)
@@ -130,18 +132,32 @@ class PageOne(tk.Frame):
     def create_widgets(self): 
         self.label = tk.Label(self,text='Creating Model')
         self.label.config(font=("Courier", 18))
-        self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)
-        img = tk.PhotoImage(file=r"..\figures\small_images\running_man.png")  
-        self.canvas = tk.Canvas(self)
-        self.canvas.create_image(50, 50, image=img)
+        self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)        
+        self.canvas = tk.Canvas(self, width=self.controller.width)
+        img = tk.PhotoImage(file=r"..\figures\small_images\running_man.png")
+        self.image_size = 60
+        self.canvas.create_image(0, 0, image=img, anchor='nw') #(0, 0) is the coordicates of the canvas, not of the tkinter window
         self.canvas.image = img
-        self.canvas.place(relx=0.7, rely=0.7, anchor=tk.CENTER)
-        #self.moveit()
+        self.canvas.place(relx=0, rely=0.5, anchor='nw')
+
 
     def moveit(self):
-        self.canvas.move(1, 1, 0)
-        self.after(100, self.moveit)    
-
+        direction = 1
+        def _moveit(direction):
+            if direction == 1:
+                if self.canvas.coords(1)[0] < self.controller.width - self.image_size:
+                    self.canvas.move(1, 10, 0)
+                else:
+                    self.canvas.move(1, -10, 0)
+                    direction = -1                    
+            else:
+                if self.canvas.coords(1)[0] >= 0:
+                    self.canvas.move(1, -10, 0)
+                else:
+                    self.canvas.move(1, 10, 0)
+                    direction = 1
+            self.after(100, _moveit, direction)    
+        _moveit(direction)
      
         
 class PageTwo(tk.Frame):
