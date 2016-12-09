@@ -146,15 +146,15 @@ class PageOne(tk.Frame):
         def _moveit(direction):
             if direction == 1:
                 if self.canvas.coords(1)[0] < self.controller.width - self.image_size:
-                    self.canvas.move(1, 10, 0)
+                    self.canvas.move(1, 5, 0)
                 else:
-                    self.canvas.move(1, -10, 0)
+                    self.canvas.move(1, -5, 0)
                     direction = -1                    
             else:
                 if self.canvas.coords(1)[0] >= 0:
-                    self.canvas.move(1, -10, 0)
+                    self.canvas.move(1, -5, 0)
                 else:
-                    self.canvas.move(1, 10, 0)
+                    self.canvas.move(1, 5, 0)
                     direction = 1
             self.after(100, _moveit, direction)    
         _moveit(direction)
