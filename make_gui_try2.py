@@ -134,10 +134,10 @@ class PageOne(tk.Frame):
         self.label.config(font=("Courier", 18))
         self.label.place(relx=0.4, rely=0.4, anchor=tk.CENTER)        
         self.canvas = tk.Canvas(self, width=self.controller.width)
-        img = tk.PhotoImage(file=r"..\figures\small_images\running_man.png")
+        self.img1 = tk.PhotoImage(file=r"..\figures\small_images\running_man.png")
+        self.img2 = tk.PhotoImage(file=r"..\figures\small_images\running_man_reverse.png")
         self.image_size = 60
-        self.canvas.create_image(0, 0, image=img, anchor='nw') #(0, 0) is the coordicates of the canvas, not of the tkinter window
-        self.canvas.image = img
+        self.image_on_canvas = self.canvas.create_image(0, 0, image=self.img1, anchor='nw') #(0, 0) is the coordicates of the canvas, not of the tkinter window
         self.canvas.place(relx=0, rely=0.5, anchor='nw')
 
 
@@ -145,16 +145,20 @@ class PageOne(tk.Frame):
         direction = 1
         def _moveit(direction):
             if direction == 1:
-                if self.canvas.coords(1)[0] < self.controller.width - self.image_size:
-                    self.canvas.move(1, 5, 0)
+                if self.canvas.coords(self.image_on_canvas)[0] < self.controller.width - self.image_size:
+                    self.canvas.move(self.image_on_canvas, 5, 0)
                 else:
-                    self.canvas.move(1, -5, 0)
+                    # change the image 
+                    self.canvas.itemconfig(self.image_on_canvas, image = self.img2)
+                    self.canvas.move(self.image_on_canvas, -5, 0)
                     direction = -1                    
             else:
-                if self.canvas.coords(1)[0] >= 0:
-                    self.canvas.move(1, -5, 0)
+                if self.canvas.coords(self.image_on_canvas)[0] >= 0:
+                    self.canvas.move(self.image_on_canvas, -5, 0)
                 else:
-                    self.canvas.move(1, 5, 0)
+                    # change the image 
+                    self.canvas.itemconfig(self.image_on_canvas, image = self.img1)
+                    self.canvas.move(self.image_on_canvas, 5, 0)
                     direction = 1
             self.after(100, _moveit, direction)    
         _moveit(direction)
