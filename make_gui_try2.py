@@ -25,7 +25,7 @@ from sklearn.model_selection import train_test_split
 class EyeCenterApp(tk.Tk):
     def __init__(self, width, height, best_model, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.geometry('{}x{}'.format(width, height))
+        self.geometry('{}x{}'.format(width, height)) 
         self.wm_title('Eye Center Prediction')
         self.resizable(width=False, height=False)
         self.width = width
@@ -225,7 +225,7 @@ class PageThree(tk.Frame):
         
         check_box1 = CheckBox(self, "Predicted Eye Centers")
         check_box2 = CheckBox(self, "True Eye Centers")
-        check_box3 = CheckBox(self, "Benchmark Models")
+        check_box3 = CheckBox(self, "Benchmark Model")
         
                   
 class CheckBox(tk.Checkbutton):
@@ -250,7 +250,7 @@ class CheckBox(tk.Checkbutton):
             color='red'
             
         if self.cv.get() == 1:
-            self.p, = self.parent.ax.plot((values['left_eye_center_x'], values['right_eye_center_x']), (values['left_eye_center_y'], values['right_eye_center_y']), marker='.', color=color, linestyle="None")
+            self.p, = self.parent.ax.plot((values['left_eye_center_x'], values['right_eye_center_x']), (values['left_eye_center_y'], values['right_eye_center_y']), marker='.', color=color, linestyle="None", markersize=10)
             self.parent.canvas.draw()
         else:
             if self.p:
