@@ -23,6 +23,7 @@ from sklearn.model_selection import train_test_split
 
 
 class EyeCenterApp(tk.Tk):
+    '''This is the controller of the eye center app.'''
     def __init__(self, width, height, best_model, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.geometry('{}x{}'.format(width, height)) 
@@ -30,16 +31,19 @@ class EyeCenterApp(tk.Tk):
         self.resizable(width=False, height=False)
         self.width = width
         self.height = height
+        # make a frame as containner
         self.container = tk.Frame(self)
         self.container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)  
         self.best_model = best_model
+        # all the pages(frames) will be added to this container
         self.frames = {}
         self.init_page(StartPage)
         self.show_frame(StartPage)
         
     def init_page(self, page, *args, **kwargs):
+        '''Initialize the pages'''
         self.frames[page] = page(self.container, self, *args, **kwargs)
         #self.frames[page].config(height=height)
         #self.frames[page].config(width=width)
@@ -47,14 +51,17 @@ class EyeCenterApp(tk.Tk):
         
         
     def show_frame(self, page):
+        '''Show the pages'''
         self.frames[page].tkraise()
         
     def build_model(self):
+        '''Process the data and use the training data to build the prediction model'''
         self.best_model.process_data()
         self.best_model.build_model()
         
         
 class StartPage(tk.Frame):
+    '''Start page consists of a title, a start button and a smiling face animation'''
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -75,8 +82,6 @@ class StartPage(tk.Frame):
         self.canvas.create_oval(210, 45, 220, 55, outline="black")
         self.canvas.create_arc(180, 70, 220, 90, start=0, extent=-180, outline="red", style=tk.ARC, width=2)
         self.animate()
-
-        
     
     def draw_eye_centers(self):
         self.eye_center1 = self.canvas.create_oval(185, 50, 185, 50, outline='blue', fill='blue', width=2)
@@ -87,22 +92,29 @@ class StartPage(tk.Frame):
         self.canvas.delete(self.eye_center2)
         
     def animate(self):
+        '''Draw the eye centers, after 1 second, remove the ete centers. Repeat the animation every 1 second'''
         self.draw_eye_centers()
         self.after(1000, self.remove_eye_centers)
         self.after(2000, self.animate)
      
     def click_start(self):
+        '''When click the start button, initialize and show PageOne first.
+           The running man starts to run while the model is being built.
+           When finish building model, show PageTwo       
+        '''
         self.controller.init_page(PageOne)
         self.controller.show_frame(PageOne)
-        #threading.Thread(target=self.controller.process_data).start()
+        
+        # create a thread to move the running man
         t1 = threading.Thread(target=self.controller.frames[PageOne].moveit)
         t1.start()
-        
+        # create another thread to build the model at the same time
         self.t2 = threading.Thread(target=self.controller.build_model)
         self.t2.start()
+        # Everyone 25ms, check if the model has been built
         self.check_model(self.t2)
         
-       
+        # if do not have running man, use the following codes to show PageOne while building the model    
         #self.controller.after(500, self.controller.process_data)        
         #self.controller.after(500, self.controller.build_model)
         #self.controller.after(500, self.controller.init_page, PageTwo)
@@ -116,13 +128,18 @@ class StartPage(tk.Frame):
                 break
             else:
                 self.after(25, self.check_model, self.t2)
-                break
+                break # the break is necessary because the check_model function will be run again in 25 ms, but if not break, the while Ture will always loop
 
        
 
                     
         
 class PageOne(tk.Frame):
+    '''PageOne consists a label and a running man animation.
+       The running man will continue to run while the model is being built.
+       When the model building is done, PageTwo would shown.
+    '''
+    
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -142,8 +159,12 @@ class PageOne(tk.Frame):
 
 
     def moveit(self):
+        '''Move the running man 5 pixels horizontally each 0.1 second.
+           The running man will flip over when bump into the boundary.
+        '''
         direction = 1
         def _moveit(direction):
+            # sub function does not need self
             if direction == 1:
                 if self.canvas.coords(self.image_on_canvas)[0] < self.controller.width - self.image_size:
                     self.canvas.move(self.image_on_canvas, 5, 0)
@@ -165,6 +186,7 @@ class PageOne(tk.Frame):
      
         
 class PageTwo(tk.Frame):
+    '''PageTwo consists of a label and 40 image buttons'''
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -188,12 +210,14 @@ class PageTwo(tk.Frame):
             ima_button.config(command=self.buttons['button_'.format(i)].click_button)
             ima_button.image = img # keep a reference!
             ima_button.grid(row=int(i/5)+1, column=i-int(i/5)*5+1, padx=3, pady=3, stick='W')
-            
-
-        
 
     
 class PageThree(tk.Frame):
+    ''' PageThree consists of a 2 labels, 3 checkboxes and a facial images
+        The first label is the title; the second label shows the MSE of the predicted results
+        The three check boxes represent the eye center locations from the model, the true locations and the benchmark model respectively
+        The facial image is drawn by matplotlib.    
+    '''
     def __init__(self, parent, controller, index):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -208,15 +232,13 @@ class PageThree(tk.Frame):
         label1.config(font=("Courier", 15))
         label1.pack()
         
-        figure, ax = self.controller.best_model.draw_face(self.index, 96)
+        figure, ax = self.controller.best_model.draw_face(self.index, 96) # figure is the Figure object from matplotlib
         canvas = FigureCanvasTkAgg(figure, self)
-        canvas.show()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)  
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        
-        #self.figure = figure
         self.ax = ax
         self.canvas = canvas
+        
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         
         button_back = tk.Button(self, text='Make another prediction', command=lambda: self.controller.show_frame(PageTwo))
         button_back.pack(side=tk.BOTTOM)       
@@ -229,8 +251,9 @@ class PageThree(tk.Frame):
         
                   
 class CheckBox(tk.Checkbutton):
+    '''This is the CheckBox class'''
     def __init__(self, parent, text):
-        self.cv = tk.IntVar()
+        self.cv = tk.IntVar() # var to record the check status of the check box
         self.parent = parent
         self.text=text
         tk.Checkbutton.__init__(self, parent, text=text, variable=self.cv, onvalue=1, offvalue=0, command=self.check_box)
@@ -239,6 +262,7 @@ class CheckBox(tk.Checkbutton):
         
         
     def check_box(self):
+        '''When click the checkbox, draw the corresponding eye centers'''
         if self.text == 'Predicted Eye Centers':
             values = self.parent.controller.best_model.data_pred.loc[self.parent.controller.best_model.data_pred['id'] == self.parent.index]
             color='blue'
@@ -248,10 +272,10 @@ class CheckBox(tk.Checkbutton):
         else:
             values = self.parent.controller.best_model.mean_pos
             color='red'
-            
+        #when the box not checked, draw the dots, when the box is checked, remove the dots   
         if self.cv.get() == 1:
-            self.p, = self.parent.ax.plot((values['left_eye_center_x'], values['right_eye_center_x']), (values['left_eye_center_y'], values['right_eye_center_y']), marker='.', color=color, linestyle="None", markersize=10)
-            self.parent.canvas.draw()
+            self.p, = self.parent.ax.plot((values['left_eye_center_x'], values['right_eye_center_x']), (values['left_eye_center_y'], values['right_eye_center_y']), marker='.', color=color, linestyle="None", markersize=10) # assign the 'layer' to a variable so that it can be removed later
+            self.parent.canvas.draw() # call the canvas.draw() to show the updated figure
         else:
             if self.p:
                 self.p.remove()
@@ -259,6 +283,9 @@ class CheckBox(tk.Checkbutton):
             
         
 class ImageButton(tk.Button):
+    '''This is the image button class. 
+       When click the button, initialize the corresponding PageThree and show PageThree
+    '''
     def __init__(self, parent, index, *args, **kwargs):
         tk.Button.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -268,14 +295,6 @@ class ImageButton(tk.Button):
         self.parent.controller.init_page(PageThree, index=self.index)
         self.parent.controller.show_frame(PageThree)
 
-        
-        
-
-        
-    
-    
-        
-        
         
 
 if __name__ == '__main__':        
