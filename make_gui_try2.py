@@ -121,16 +121,13 @@ class StartPage(tk.Frame):
         #self.controller.after(500, self.controller.show_frame, PageTwo)
         
     def check_model(self, threading_name):
-        while True:
-            if not threading_name.isAlive():
-                self.controller.init_page(PageTwo)
-                self.controller.show_frame(PageTwo)
-                break
-            else:
-                self.after(25, self.check_model, self.t2)
-                break # the break is necessary because the check_model function will be run again in 25 ms, but if not break, the while Ture will always loop
-
-       
+        if not threading_name.isAlive():
+            self.controller.init_page(PageTwo)
+            self.controller.show_frame(PageTwo)
+        else:
+            self.after(25, self.check_model, self.t2)
+            
+   
 
                     
         
