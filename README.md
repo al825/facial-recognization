@@ -32,12 +32,15 @@ The programs in this project are written in Python3.5.
       clf can take values: LogisticRegression, RandomForestClassifier, SVC, SGD
       e.g ipython3 BuildModel_entire.py none LogisticRegression
       
- 5. build_model_gui.py
-    * description: a model class including data processing, model building and results predicting
+5. best_model.py
+    * description: builds the "optimal model" suggested by the GridSearch
+    
+6. build_model_gui.py
+    * description: a model class including methods for data processing, model building and results predicting
     * usage: called by the eye_center_gui.py program
       
- 6. eye_center_gui.py
-    * description: a GUI which processes the data, builds the model and enables the users to select facial images for the predictions.
+7. eye_center_gui.py
+    * description: a GUI which processes the data, builds the model and enables the users to select facial images for the predictions
     * called using command line:  
     ipython3 eye_center_gui.py
 
