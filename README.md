@@ -1,6 +1,8 @@
 # Eye Center Identification
 Image recognition has become a popular and challenging topic in the field of machine learning.This project is a symplified version of Kaggle's competition--[Facial Keypoints Detection](https://www.kaggle.com/c/facial-keypoints-detection). 
 
+This project applies machine learning classification techniques to make predictions of the eye center locations on facial images. A GUI application has been made to show the predicted results. 
+
 ## Data
 
 1. Original data source: https://www.kaggle.com/c/facial-keypoints-detection/data training.zip
@@ -35,4 +37,6 @@ Here is an example of the predictions of eye locations:
 ![Example](https://github.com/al825/facial-recognization/blob/master/image_for_readme.png)  
 
 The red dots represent the predicted eye center locations and the blue dots represent the results from the benchmark model. 
+
+
 
