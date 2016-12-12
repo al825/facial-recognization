@@ -112,11 +112,12 @@ class BestModel():
                               'right_eye_center_y': BestModel.train_pos.right_eye_center_y.mean()}
             
         self.data_pred = pd.DataFrame(columns = ('id', 'left_eye_center_x', 'left_eye_center_y', 'right_eye_center_x', 'right_eye_center_y'))
-       
+
     
     def build_model(self):       
         self.eye_id = EyeCenterIdentifier(self.clf, self.step_size, self.N_steps)
         self.clf = self.eye_id.fit(BestModel.train_X, BestModel.train_y, BestModel.train_pos)
+
     
     def make_prediction(self, index):
         data_pred = self.eye_id.predict(BestModel.test_X.iloc[index], has_prob=True)
