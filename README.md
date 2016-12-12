@@ -31,6 +31,15 @@ The programs in this project are written in Python3.5.
       transformation can take values: none, histeq, derivative
       clf can take values: LogisticRegression, RandomForestClassifier, SVC, SGD
       e.g ipython3 BuildModel_entire.py none LogisticRegression
+      
+ 5. build_model_gui.py
+      * description: Make a model class including data processing, model building and results predicting. 
+      * usage: called by the eye_center_gui.py program
+      
+ 6. eye_center_gui.py
+      * description: A GUI which processes the data, builds the model and enables the users to select facial images for the predictions.
+      * call using command line:  
+      ipython3 eye_center_gui.py
 
 ## Example
 Here is an example of the predictions of eye locations: 
