@@ -13,30 +13,45 @@ The programs in this project are written in Python3.5.
 
 ## Programs and Usage
 1. my_func.py
-    * description: contains functions for data processing and results visualization
+    * description: functions for data processing and results visualization
     * usage: called by BuildModel_entire.py, best_model.py
 
 2. image_preprocess.py
-    * description: contains functions for image transformation
+    * description: functions for image transformation
     * usage: called by BuildModel_entire.py, best_model.py
 
 3. eye_identifier.py
-     * description: contains EyeCenterIdentifier class and GridSearch class
+     * description: EyeCenterIdentifier class and GridSearch class
      * usage: called by BuildModel_entire.py and best_model.py
 
 4. BuildModel_entire.py
-    * description: process the data, build EyeCenterIdentifier and do GridSearch 
-    * call using command line:   
+    * description: processes the data, builds EyeCenterIdentifier and does GridSearch 
+    * called using command line:   
       ipython3 BuildModel_entire.py [transformation] [clf]
       transformation can take values: none, histeq, derivative
       clf can take values: LogisticRegression, RandomForestClassifier, SVC, SGD
       e.g ipython3 BuildModel_entire.py none LogisticRegression
+      
+5. best_model.py
+    * description: builds the "optimal model" suggested by the GridSearch
+    
+6. build_model_gui.py
+    * description: a model class including methods for data processing, model building and results predicting
+    * usage: called by the eye_center_gui.py program
+      
+7. eye_center_gui.py
+    * description: a GUI which processes the data, builds the model and enables the users to select facial images for the predictions
+    * called using command line:  
+    ipython3 eye_center_gui.py
 
 ## Example
 Here is an example of the predictions of eye locations: 
 ![Example](https://github.com/al825/facial-recognization/blob/master/image_for_readme.png)  
 
-The red dots represent the predicted eye center locations and the blue dots represent the results from the benchmark model. 
+The red dots represent the predicted eye center locations, the green dots represent the true eye center locations and the blue dots represent the results from the benchmark model. 
+
+## Demo
+To see the demo of the GUI application, please click [here](https://www.youtube.com/watch?v=MaR3ZeeJsO0).
 
 
 
