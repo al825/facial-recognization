@@ -3,6 +3,7 @@ import pandas as pd
 import sklearn 
 import numpy as np
 import random
+import pickle
 from matplotlib import pyplot as plt
 import my_func
 import time
@@ -108,6 +109,11 @@ rate_eye = sum(data_eye.is_eye == 1)/data_eye.shape[0]
 print ("{:.2} of the subplots are eye.".format(rate_eye))
 
 
+# pickle the data sets
+with open('../pickles/datasets.pickle', 'wb') as datasets:
+    pickle.dump((train_X, train_y, train_images, train_pos, test_X, test_pos), datasets)
+    
+
 # A Benchmark
 # If use the mean center of the training set, what is the mse
 pred_data_mean = pd.DataFrame({'left_eye_x_mean': [train_pos.left_eye_center_x.mean()] * len(test_X),
@@ -124,8 +130,6 @@ N_steps = (8, 4)
 
 # Random Forest
 from sklearn.ensemble import RandomForestClassifier
-
-
 clf = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
             max_depth=None, max_features='auto', max_leaf_nodes=None,
             min_impurity_split=1e-07, min_samples_leaf=1,
@@ -133,24 +137,18 @@ clf = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini'
             n_estimators=50, n_jobs=1, oob_score=False, random_state=312,
             verbose=0, warm_start=False)
 
-from sklearn.linear_model import LogisticRegression
-clf = LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                         intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
-                         penalty='l1', random_state=312, solver='liblinear', tol=0.0001,
-                         verbose=0, warm_start=False)
-
-from sklearn.linear_model import SGDClassifier      
-clf = SGDClassifier(alpha=0.1, average=False, class_weight=None, epsilon=0.1,
-              eta0=0.0, fit_intercept=True, l1_ratio=0.15,
-              learning_rate='optimal', loss='log', n_iter=5, n_jobs=1,
-              penalty='l2', power_t=0.5, random_state=312, shuffle=True,
-              verbose=0, warm_start=False)
        
 eye_id = EyeCenterIdentifier(clf, step_size, N_steps)
 t1 = time.time()
 clf = eye_id.fit(train_X, train_y, train_pos)
 print("Time to fit the model: {:.2f} seconds".format(time.time()-t1))
 t1 = time.time()
+
+#pickle the best model
+with open('../pickles/best_model.pickle', 'wb') as finalized_model:
+    pickle.dump(eye_id, finalized_model)
+
+
 data_pred = eye_id.predict(test_X, has_prob = True)
 print("Time to make the prediction: {:.2f} seconds".format(time.time()-t1))
 mse = eye_id.get_mse(data_pred, test_pos) #1.63
