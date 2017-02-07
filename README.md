@@ -50,7 +50,8 @@ Here is an example of the predictions of eye locations:
 
 The red dots represent the predicted eye center locations, the green dots represent the true eye center locations and the blue dots represent the results from the benchmark model. 
 
-## Demo
+## GUI (https://github.com/al825/facial-recognization/blob/master/image_for_readme2.png)  
+
 To see the demo of the GUI application, please click [here](https://www.youtube.com/watch?v=MaR3ZeeJsO0).
 
 
