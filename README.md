@@ -53,7 +53,7 @@ The red dots represent the predicted eye center locations, the green dots repres
 ## GUI 
 ![GUI Example](https://github.com/al825/facial-recognization/blob/master/Image_for_readme2.png)  
 
-To see the demo of the GUI application, please click [here](https://www.youtube.com/watch?v=MaR3ZeeJsO0).
+To see the **demo** of the GUI application, please click [here](https://www.youtube.com/watch?v=MaR3ZeeJsO0).
 
 
 
